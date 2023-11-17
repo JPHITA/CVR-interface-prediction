@@ -3,29 +3,36 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 import pandas as pd
 
-class PredictiveModelApp:
+from prediction import Prediction
+
+class Main:
+
+    H = 700
+    W = 800
+
     def __init__(self, master):
         self.master = master
         self.master.title("Colombian Virtual Reality")
-        self.master.geometry("800x700")
+        self.master.geometry(F"{self.W}x{self.H}")
+        self.master.resizable(False, False)
 
         # Frame para la imagen de fondo
         self.image_frame = tk.Frame(master)
         self.image_frame.pack(fill="both", expand=True)
-
-        # Cargar la imagen de fondo y redimensionarla al tamaño de la pantalla
-        background_image = Image.open("image/CVR2.jpg")
-        background_image = background_image.resize((800, 700))
-        background_photo = ImageTk.PhotoImage(background_image)
-
-        # Configurar el contenedor de la imagen de fondo
-        self.background_label = tk.Label(self.image_frame, image=background_photo)
-        self.background_label.image = background_photo
+        self.background_label = tk.Label(self.image_frame)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        
+        # Cargar la imagen de fondo
+        self.set_img_background(self.background_label, "image/CVR2.jpg")
 
         # Frame para los botones de predicción
-        self.prediction_frame = tk.Frame(master, bg="navy")  # Establecer el color de fondo a azul marino
+        self.prediction_frame = tk.Frame(master)
         self.prediction_frame.pack(fill="both", expand=True)
+        self.prediction_background_label = tk.Label(self.prediction_frame)
+        self.prediction_background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Cargar la imagen de fondo
+        self.set_img_background(self.prediction_background_label, "image/CVR.jpg")
 
         # Variables para almacenar las entradas del usuario
         font_size = 12
@@ -33,25 +40,20 @@ class PredictiveModelApp:
         entry_font = ("Arial", font_size)
         button_font = ("Arial", font_size, "bold")
 
-        self.name_label = tk.Label(self.prediction_frame, text="Nombre del Usuario:", font=label_font, bg="navy",
-                                   fg="white")
-        self.name_label.grid(row=0, column=0, pady=10, padx=10, sticky="e")
+        self.name_label = tk.Label(self.prediction_frame, text="Nombre del Usuario:", font=label_font)
+        self.name_label.grid(row=0, column=0, pady=50, padx=10, sticky="e")
 
         self.name_entry = tk.Entry(self.prediction_frame, font=entry_font)
-        self.name_entry.grid(row=0, column=1, pady=10, padx=10, sticky="w")
+        self.name_entry.grid(row=0, column=1, pady=50, padx=10, sticky="w")
 
         # Botones para realizar la predicción
         self.predict_button = tk.Button(self.prediction_frame, text="Predecir por Nombre", command=self.predict_by_name,
-                                        font=button_font, bg="white", fg="navy")
-        self.predict_button.grid(row=1, column=0, columnspan=2, pady=10, padx=10, sticky="nsew")
+                                        font=button_font, bg="white", width=20, height=2)
+        self.predict_button.grid(row=1, column=0, columnspan=2, pady=2, padx=10)
 
         self.predict_file_button = tk.Button(self.prediction_frame, text="Predecir por Archivo",
-                                             command=self.predict_by_file, font=button_font, bg="white", fg="navy")
-        self.predict_file_button.grid(row=2, column=0, columnspan=2, pady=10, padx=10, sticky="nsew")
-
-        # Etiqueta para mostrar el resultado de la predicción
-        self.output_label = tk.Label(self.prediction_frame, text="", font=label_font, bg="navy", fg="white")
-        self.output_label.grid(row=3, column=0, columnspan=2, pady=10, padx=10, sticky="nsew")
+                                             command=self.predict_by_file, font=button_font, bg="white", width=20, height=2)
+        self.predict_file_button.grid(row=2, column=0, columnspan=2, pady=2, padx=10)
 
         # Configurar el peso de las filas y columnas para que se expandan con la ventana
         self.prediction_frame.grid_rowconfigure(0, weight=1)
@@ -65,25 +67,25 @@ class PredictiveModelApp:
         self.show_image_frame()
         self.hide_prediction_frame()
 
-        # Bind para detectar cambios de tamaño de ventana
-        master.bind("<Configure>", self.on_window_resize)
 
         # Botón para cambiar entre frames
         self.switch_frame_button = tk.Button(master, text="Predecir", command=self.toggle_frames, font=button_font,
-                                             bg="white", fg="navy")
+                                             bg="white")
         self.switch_frame_button.pack(pady=10, padx=10)
 
-    def on_window_resize(self, event):
-        # Redimensionar la imagen de fondo cuando cambie el tamaño de la ventana
-        screen_width = event.width
-        screen_height = event.height
-        background_image = Image.open("ColombianVirtualReality\image\CVR.jpg")
-        background_image = background_image.resize((screen_width, screen_height))
+
+    def set_img_background(self, element, path):
+        # Cargar la imagen de fondo y redimensionarla al tamaño de la pantalla
+        background_image = Image.open(path)
+        background_image = background_image.resize((self.W, self.H))
         background_photo = ImageTk.PhotoImage(background_image)
-        self.background_label.config(image=background_photo)
-        self.background_label.image = background_photo
+
+        element.configure(image=background_photo)
+        element.image = background_photo
 
     def toggle_frames(self):
+        self.switch_frame_button.pack_forget()
+
         # Cambiar entre el frame de imagen y el frame de predicción
         if self.image_frame.winfo_ismapped():
             self.hide_image_frame()
@@ -111,8 +113,10 @@ class PredictiveModelApp:
         # Llamar al modelo predictivo con el nombre del usuario (sustituir con tu lógica)
         prediction = self.predictive_model_by_name(user_name)
 
+        Prediction(self.master, by_name=user_name)
+
         # Mostrar el resultado en la etiqueta de salida
-        self.output_label.config(text=f"Predicción para {user_name}: {prediction}")
+        # self.output_label.config(text=f"Predicción para {user_name}: {prediction}")
 
     def predictive_model_by_name(self, user_name):
         # Lógica de predicción por nombre (sustituir con tu modelo real)
@@ -132,7 +136,7 @@ class PredictiveModelApp:
             predictions = self.predictive_model_by_file(df)
 
             # Mostrar el resultado en la etiqueta de salida
-            self.output_label.config(text=f"Predicciones desde Archivo:\n{predictions}")
+            # self.output_label.config(text=f"Predicciones desde Archivo:\n{predictions}")
 
     def predictive_model_by_file(self, data_frame):
         # Lógica de predicción desde archivo (sustituir con tu modelo real)
@@ -142,7 +146,7 @@ class PredictiveModelApp:
 
 def main():
     root = tk.Tk()
-    app = PredictiveModelApp(root)
+    app = Main(root)
     root.mainloop()
 
 if __name__ == "__main__":
