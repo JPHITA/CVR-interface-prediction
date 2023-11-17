@@ -1,3 +1,5 @@
 /venv
 
 credenciales.json
+
+__pycache__
