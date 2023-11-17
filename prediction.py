@@ -1,5 +1,4 @@
 from pandas import read_sql as pd_read_sql, read_csv as pd_read_csv, read_excel as pd_read_excel
-from numpy import round as np_round
 import tkinter as tk
 from tkinter import ttk
 from xgboost import XGBClassifier

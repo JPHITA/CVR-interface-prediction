@@ -107,9 +107,13 @@ class Main:
 
     def predict_by_name(self):
         # Obtener el nombre ingresado por el usuario
-        user_name = self.name_entry.get()
+        user_name = self.name_entry.get().strip()
 
-        Prediction(self.master, by_name=user_name)
+        if len(user_name) > 0:
+            Prediction(self.master, by_name=user_name)
+
+        else:
+            tk.messagebox.showerror("Error", "Ingrese un nombre de usuario válido")
 
     def predict_by_file(self):
         # Abrir el cuadro de diálogo para seleccionar un archivo Excel
