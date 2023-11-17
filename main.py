@@ -39,14 +39,14 @@ class Main:
         entry_font = ("Arial", font_size)
         button_font = ("Arial", font_size, "bold")
 
-        self.name_label = tk.Label(self.prediction_frame, text="Nombre del Usuario:", font=label_font)
+        self.name_label = tk.Label(self.prediction_frame, text="Email del Usuario:", font=label_font)
         self.name_label.grid(row=0, column=0, pady=50, padx=10, sticky="e")
 
         self.name_entry = tk.Entry(self.prediction_frame, font=entry_font)
         self.name_entry.grid(row=0, column=1, pady=50, padx=10, sticky="w")
 
         # Botones para realizar la predicción
-        self.predict_button = tk.Button(self.prediction_frame, text="Predecir por Nombre", command=self.predict_by_name,
+        self.predict_button = tk.Button(self.prediction_frame, text="Predecir por Email", command=self.predict_by_name,
                                         font=button_font, bg="white", width=20, height=2)
         self.predict_button.grid(row=1, column=0, columnspan=2, pady=2, padx=10)
 
@@ -109,39 +109,14 @@ class Main:
         # Obtener el nombre ingresado por el usuario
         user_name = self.name_entry.get()
 
-        # Llamar al modelo predictivo con el nombre del usuario (sustituir con tu lógica)
-        prediction = self.predictive_model_by_name(user_name)
-
         Prediction(self.master, by_name=user_name)
-
-        # Mostrar el resultado en la etiqueta de salida
-        # self.output_label.config(text=f"Predicción para {user_name}: {prediction}")
-
-    def predictive_model_by_name(self, user_name):
-        # Lógica de predicción por nombre (sustituir con tu modelo real)
-        # Aquí puedes llamar a tu modelo predictivo y obtener la probabilidad de compra
-        # En este ejemplo ficticio, simplemente devolvemos un valor de prueba
-        return 0.75
 
     def predict_by_file(self):
         # Abrir el cuadro de diálogo para seleccionar un archivo Excel
-        file_path = filedialog.askopenfilename(filetypes=[("Archivos Excel", "*.xlsx;*.xls")])
+        file_path = filedialog.askopenfilename(filetypes=[("Archivos csv", "*.csv")])
 
         if file_path:
-            # Cargar datos desde el archivo Excel
-            df = pd.read_excel(file_path)
-
-            # Llamar al modelo predictivo con los datos del archivo (sustituir con tu lógica)
-            predictions = self.predictive_model_by_file(df)
-
-            # Mostrar el resultado en la etiqueta de salida
-            # self.output_label.config(text=f"Predicciones desde Archivo:\n{predictions}")
-
-    def predictive_model_by_file(self, data_frame):
-        # Lógica de predicción desde archivo (sustituir con tu modelo real)
-        # Aquí puedes llamar a tu modelo predictivo para cada fila del DataFrame y obtener las probabilidades de compra
-        # En este ejemplo ficticio, simplemente devolvemos valores de prueba
-        return [0.8, 0.6, 0.9]  # Lista de probabilidades para cada fila
+            Prediction(self.master, by_file=file_path)
 
 def main():
     root = tk.Tk()
