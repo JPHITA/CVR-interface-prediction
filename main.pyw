@@ -13,7 +13,7 @@ class Main:
         self.master = master
         self.master.title("Colombian Virtual Reality")
         self.master.geometry(F"{self.W}x{self.H}")
-        self.master.resizable(False, False)
+        # self.master.resizable(False, False)
 
         # Frame para la imagen de fondo
         self.image_frame = tk.Frame(master)
